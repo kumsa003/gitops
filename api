@@ -1,0 +1,38 @@
+@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
+import groovyx.net.http.RESTClient
+
+def vaultUrl = "https://your-vault-url"
+def roleId = "your-role-id"
+def secretId = "your-secret-id"
+
+def authPayload = [
+    role_id: roleId,
+    secret_id: secretId
+]
+
+def authResponse = new RESTClient("$vaultUrl/v1/auth/approle/login").post(contentType: 'APPLICATION_JSON', body: authPayload)
+
+if (authResponse.status == 200) {
+    def token = authResponse.data.auth.client_token
+
+    def secretResponse = new RESTClient("$vaultUrl/v1/secret-path/secret-name").header('X-Vault-Token', token).get()
+
+    if (secretResponse.status == 200) {
+        def password = secretResponse.data.data.password
+
+        // Now you can use the password as needed
+        println "Retrieved password: ${password}"
+
+        // For example, use the password to connect to a database
+        def databaseUrl = "jdbc:mysql://your-database-url"
+        def username = "your-username"
+
+        // Use the retrieved password to connect to the database
+        def connection = DriverManager.getConnection(databaseUrl, username, password)
+        // Now you can work with the database connection
+    } else {
+        println "Failed to retrieve secret. Response status: ${secretResponse.status}"
+    }
+} else {
+    println "Authentication failed. Response status: ${authResponse.status}"
+}
