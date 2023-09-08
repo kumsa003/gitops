@@ -1,4 +1,4 @@
-@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
+ki@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
 import groovyx.net.http.RESTClient
 
 def vaultUrl = "https://your-vault-url"
@@ -36,3 +36,53 @@ if (authResponse.status == 200) {
 } else {
     println "Authentication failed. Response status: ${authResponse.status}"
 }
+
+
+
+
+
+____________
+
+
+
+If you need to send multiple headers in your `curl` request in Groovy to retrieve a password from a KV Vault, you can specify additional headers in the `client.headers` map. Here's an example of how to include multiple headers:
+
+```groovy
+@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
+import groovyx.net.http.RESTClient
+
+// Define the Vault URL and Path
+def VAULT_URL = "https://your-vault-url.com"
+def VAULT_PATH = "secret/your-secret-path"
+
+// Define the authentication token
+def AUTH_TOKEN = "your-auth-token"
+
+// Define other headers
+def customHeaders = [
+    'Header1': 'Value1',
+    'Header2': 'Value2'
+]
+
+// Create a REST client
+def client = new RESTClient(VAULT_URL)
+
+// Set the authentication header
+client.headers['X-Vault-Token'] = AUTH_TOKEN
+
+// Add custom headers
+client.headers.putAll(customHeaders)
+
+// Make an HTTP GET request to retrieve the secret
+def response = client.get(path: VAULT_PATH)
+
+// Check if the request was successful
+if (response.status == 200) {
+    def secretData = response.data
+    println("Password: ${secretData.data.password}")
+} else {
+    println("Error: ${response.status} - ${response.statusLine}")
+}
+```
+
+In this example, `customHeaders` is a map containing the additional headers you want to include in your request. These headers are added to the `client.headers` map using `client.headers.putAll(customHeaders)`. You can add as many custom headers as needed by extending the `customHeaders` map. Adjust the headers and values according to your specific requirements.
