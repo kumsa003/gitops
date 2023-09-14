@@ -86,3 +86,18 @@ if (response.status == 200) {
 ```
 
 In this example, `customHeaders` is a map containing the additional headers you want to include in your request. These headers are added to the `client.headers` map using `client.headers.putAll(customHeaders)`. You can add as many custom headers as needed by extending the `customHeaders` map. Adjust the headers and values according to your specific requirements.
+
+
+
+
+
+
+---------------------------------------------------------------------------
+
+Current Secret ID: As you may be aware, we are currently using a Secret ID in our pipeline library to access certain resources.
+
+Expiration Reminder: It's crucial to note that this Secret ID is set to expire in 180 days from its creation date. This expiration is in place for security reasons, and it's essential that we renew it in a timely manner to ensure uninterrupted access to our resources.
+
+Renewal Process: To ensure we don't experience any disruptions, we are actively looking into ways to renew the Secret ID without having to change it. Renewing the Secret ID in advance will help us maintain seamless access to our systems and avoid any potential issues.
+
+Our team is currently working on implementing a process to automatically renew the Secret ID before it expires, 
